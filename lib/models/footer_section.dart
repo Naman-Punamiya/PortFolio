@@ -39,9 +39,9 @@ class FooterSection extends StatelessWidget {
               ),
               InkWell(
                 onTap: () {
-                  js.context.callMethod("open",[SnsLinks.telegram]);
+                  js.context.callMethod("open",[SnsLinks.leetcode]);
                 },
-                child: Image.asset("Telegram_white.png", width: 28),
+                child: Image.asset("LeetCode_white.png", width: 28),
               ),
               InkWell(
                 onTap: () {

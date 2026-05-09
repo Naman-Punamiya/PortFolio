@@ -22,7 +22,7 @@ class AboutDesktopPart extends StatelessWidget {
               children: [
                 Text(
                   "I am Student of BTech in Computer Engineering. I am very curious about new technologies.",
-                  style: TextStyle(fontSize: 26, height: 1.5),
+                  style: TextStyle(fontSize: 26, height: 1),
                 ),
                 SizedBox(height: 20),
                 Text(

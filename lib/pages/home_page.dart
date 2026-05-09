@@ -112,7 +112,7 @@ class _HomePageState extends State<HomePage> {
                                 ],
                               ),
                             ),
-                            SizedBox(height: 30),
+                            // SizedBox(height: 30),
                             if (constraints.maxWidth >= MedDesktopWidth)
                               SkillsDesktop()
                             else
@@ -162,7 +162,7 @@ void scrollToSection(
     );
   } else if (navIndex == 3) {
     Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (context) => ExperiencePage()),
+      MaterialPageRoute(builder: (context) => ExperiencePage(navbarkeys: navbarkeys)),
     );
   } else if (navIndex == 4) {
     Navigator.of(context).pushReplacement(
