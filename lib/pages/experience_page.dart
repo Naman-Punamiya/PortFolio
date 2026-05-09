@@ -5,9 +5,7 @@ import 'package:my_portfolio/models/appbar_desktop.dart';
 import 'package:my_portfolio/models/appbar_mobile.dart';
 import 'package:my_portfolio/models/drawer_mobile.dart';
 import 'package:my_portfolio/models/footer_section.dart';
-import 'package:my_portfolio/models/project_card.dart';
 import 'package:my_portfolio/pages/home_page.dart';
-import 'package:my_portfolio/utility/project_utils.dart';
 
 class ExperiencePage extends StatelessWidget {
   final List<GlobalKey> navbarkeys;

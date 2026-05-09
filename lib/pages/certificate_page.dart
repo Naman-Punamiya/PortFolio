@@ -3,7 +3,6 @@ import 'package:my_portfolio/constants/colors.dart';
 import 'package:my_portfolio/constants/size.dart';
 import 'package:my_portfolio/models/appbar_desktop.dart';
 import 'package:my_portfolio/models/appbar_mobile.dart';
-import 'package:my_portfolio/models/certificate_card.dart';
 import 'package:my_portfolio/models/drawer_mobile.dart';
 import 'package:my_portfolio/models/footer_section.dart';
 import 'package:my_portfolio/pages/home_page.dart';
