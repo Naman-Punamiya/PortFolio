@@ -9,7 +9,7 @@ import 'package:my_portfolio/features/about/about_page.dart';
 import 'package:my_portfolio/features/certificate/certificate_page.dart';
 import 'package:my_portfolio/features/experience/experience_page.dart';
 import 'package:my_portfolio/features/projects/projects_page.dart';
-import 'package:my_portfolio/features/skills/skills_mobile.dart';
+import 'package:my_portfolio/features/skills/skills_widget.dart';
 import 'package:my_portfolio/app/theme/app_spacing.dart';
 
 class HomePage extends StatefulWidget {
@@ -62,6 +62,7 @@ class _HomePageState extends State<HomePage> {
                   child: Column(
                     children: [
                       SizedBox(key: navbarkeys.first),
+                      // SizedBox(height: AppSpacing.lg + AppSpacing.sm),
                       HomePageWidget(
                         onTap: () {
                           Navigator.of(context).pushReplacement(
@@ -76,37 +77,57 @@ class _HomePageState extends State<HomePage> {
                         key: navbarkeys[1],
                         height: screenSize.height,
                         width: screenWidth,
-                        padding: const EdgeInsets.fromLTRB(
-                          AppSpacing.lg,
-                          AppSpacing.lg,
-                          AppSpacing.lg,
-                          AppSpacing.lg,
-                        ),
+                        padding: const EdgeInsets.all(AppSpacing.lg),
                         color: theme.colorScheme.surface,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.start,
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            const SizedBox(height: AppSpacing.lg),
+                            // const SizedBox(height: AppSpacing.lg),
                             Padding(
-                              padding: const EdgeInsets.only(left: AppSpacing.lg),
+                              padding: const EdgeInsets.only(
+                                left: AppSpacing.lg,
+                              ),
                               child: Row(
                                 children: [
                                   const SizedBox(width: 75),
                                   Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        "What I can do",
-                                        style: theme.textTheme.headlineMedium,
+                                        "SKILLS",
+                                        style: theme.textTheme.labelLarge
+                                            ?.copyWith(
+                                              color: theme.colorScheme.primary,
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.w700,
+                                              letterSpacing: 1.5,
+                                            ),
                                       ),
-                                      const SizedBox(height: AppSpacing.lg + AppSpacing.xs),
                                       Text(
-                                        "The type of development I do and Skills I have",
-                                        textAlign: TextAlign.start,
-                                        style: theme.textTheme.bodyMedium?.copyWith(
-                                          fontSize: 18,
+                                        "What I can do",
+                                        style: theme.textTheme.headlineMedium
+                                            ?.copyWith(
+                                              fontSize: 45,
+                                              height: 1.5,
+                                            ),
+                                      ),
+                                      // const SizedBox(height: AppSpacing.lg + AppSpacing.xs),
+                                      SizedBox(
+                                        width: 470,
+                                        child: Text(
+                                          "I built cross-platform applications and scalable solutions using modern technologies.",
+                                          style: theme.textTheme.bodyLarge
+                                              ?.copyWith(
+                                                height: 1.8,
+                                                color: theme
+                                                    .colorScheme
+                                                    .onSurfaceVariant,
+                                                fontSize: 18,
+                                              ),
                                         ),
                                       ),
                                     ],
@@ -114,13 +135,13 @@ class _HomePageState extends State<HomePage> {
                                 ],
                               ),
                             ),
-                            // SizedBox(height: 30),
+                            SizedBox(height: AppSpacing.xxl+AppSpacing.sm),
                             SkillsWidget(),
                           ],
                         ),
                       ),
 
-                      const SizedBox(height: AppSpacing.lg + AppSpacing.sm),
+                      // const SizedBox(height: AppSpacing.lg + AppSpacing.sm),
 
                       ContactSection(),
 

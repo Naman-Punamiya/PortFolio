@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
-import 'dart:js' as js;
-import 'package:my_portfolio/features/models/sns_links.dart';
+import 'package:my_portfolio/app/theme/app_colors.dart';
+import 'package:my_portfolio/app/theme/app_contact.dart';
+import 'package:my_portfolio/app/theme/app_layout.dart';
+import 'package:my_portfolio/app/theme/app_radius.dart';
 import 'package:my_portfolio/app/theme/app_spacing.dart';
+import 'package:my_portfolio/features/models/sns_links.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class FooterSection extends StatelessWidget {
   const FooterSection({super.key});
@@ -10,54 +14,136 @@ class FooterSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Container(
-      color: theme.colorScheme.surfaceVariant,
-      padding: const EdgeInsets.symmetric(vertical: AppSpacing.lg),
-      width: double.maxFinite,
-      alignment: Alignment.center,
-      child: Column(
-        children: [
-          Wrap(
-            spacing: 12,
-            runSpacing: 12,
-            alignment: WrapAlignment.center,
+      width: double.infinity,
+      color: theme.scaffoldBackgroundColor,
+      padding: const EdgeInsets.fromLTRB(
+        AppSpacing.lg,
+        AppLayout.footerSectionVerticalPadding,
+        AppSpacing.lg,
+        AppLayout.footerSectionVerticalPadding,
+      ),
+      child: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: AppLayout.contactSectionMaxWidth),
+          child: Column(
             children: [
-              InkWell(
-                onTap: () {
-                  js.context.callMethod("open",[SnsLinks.github]);
-                },
-                child: Image.asset("Github_white.png", width: 28),
+              Row(
+                children: [
+                  Expanded(
+                    child: Divider(
+                      color: theme.dividerColor.withValues(alpha: 0.55),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm),
+                    child: Text(
+                      AppContact.connectTitle,
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        color: theme.colorScheme.primary,
+                        fontWeight: FontWeight.w700,
+                        fontSize: AppLayout.footerConnectLabelSize,
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: Divider(
+                      color: theme.dividerColor.withValues(alpha: 0.55),
+                    ),
+                  ),
+                ],
               ),
-              InkWell(
-                onTap: () {
-                  js.context.callMethod("open",[SnsLinks.linkedin]);
-                },
-                child: Image.asset("linkedin_white.png", width: 28),
+              const SizedBox(height: AppLayout.footerConnectGap),
+              Wrap(
+                spacing: AppLayout.footerSocialGap,
+                runSpacing: AppLayout.footerSocialGap,
+                alignment: WrapAlignment.center,
+                children: const [
+                  _SocialIconButton(
+                    label: 'GitHub',
+                    asset: 'Github_white.png',
+                    url: SnsLinks.github,
+                  ),
+                  _SocialIconButton(
+                    label: 'LinkedIn',
+                    asset: 'linkedin_white.png',
+                    url: SnsLinks.linkedin,
+                  ),
+                  _SocialIconButton(
+                    label: 'Instagram',
+                    asset: 'Instagram_white.png',
+                    url: SnsLinks.instagram,
+                  ),
+                  _SocialIconButton(
+                    label: 'Discord',
+                    asset: 'Discord_white.png',
+                    url: SnsLinks.discord,
+                  ),
+                ],
               ),
-              InkWell(
-                onTap: () {
-                  js.context.callMethod("open",[SnsLinks.instagram]);
-                },
-                child: Image.asset("Instagram_white.png", width: 28),
+              const SizedBox(height: AppLayout.footerBottomGap),
+              Text(
+                AppContact.footerTitle,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: AppColors.textSecondary,
+                ),
               ),
-              InkWell(
-                onTap: () {
-                  js.context.callMethod("open",[SnsLinks.leetcode]);
-                },
-                child: Image.asset("LeetCode_white.png", width: 28),
-              ),
-              InkWell(
-                onTap: () {
-                  js.context.callMethod("open",[SnsLinks.discord]);
-                },
-                child: Image.asset("Discord_white.png", width: 28),
+              const SizedBox(height: AppSpacing.xs),
+              Text(
+                AppContact.footerSubtitle,
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: AppColors.textSecondary,
+                ),
               ),
             ],
           ),
-          const SizedBox(height: AppSpacing.sm),
+        ),
+      ),
+    );
+  }
+}
+
+class _SocialIconButton extends StatelessWidget {
+  const _SocialIconButton({
+    required this.label,
+    required this.asset,
+    required this.url,
+  });
+
+  final String label;
+  final String asset;
+  final String url;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return InkWell(
+      onTap: () async {
+        await launchUrl(
+          Uri.parse(url),
+          mode: LaunchMode.externalApplication,
+        );
+      },
+      borderRadius: BorderRadius.circular(AppRadius.xl),
+      child: Column(
+        children: [
+          Container(
+            width: AppLayout.footerSocialIconSize,
+            height: AppLayout.footerSocialIconSize,
+            decoration: BoxDecoration(
+              color: theme.colorScheme.surface,
+              shape: BoxShape.circle,
+              border: Border.all(
+                color: theme.dividerColor.withValues(alpha: 0.45),
+              ),
+            ),
+            alignment: Alignment.center,
+            child: Image.asset(asset, width: 24),
+          ),
+          const SizedBox(height: AppSpacing.xs),
           Text(
-            "Made By Naman Punamiya with Flutter",
+            label,
             style: theme.textTheme.bodySmall?.copyWith(
-              color: theme.colorScheme.onSurface,
+              color: AppColors.textSecondary,
             ),
           ),
         ],

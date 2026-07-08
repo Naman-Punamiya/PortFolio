@@ -19,7 +19,7 @@ class HomePageWidget extends StatelessWidget {
     final theme = Theme.of(context);
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-      height: screenSize.height,
+      height: screenSize.height/1.5,
       constraints: const BoxConstraints(minHeight: 350),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -71,8 +71,8 @@ class HomePageWidget extends StatelessWidget {
     final theme = Theme.of(context);
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: AppSpacing.sm),
-      height: screenSize.height,
-      constraints: const BoxConstraints(minHeight: 350),
+      height: screenSize.height/1.05,
+      // constraints: const BoxConstraints(minHeight: 350),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
@@ -81,8 +81,9 @@ class HomePageWidget extends StatelessWidget {
             padding: const EdgeInsets.only(left: AppSpacing.xxl * 2),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
+                SizedBox(height: AppSpacing.xxl * 2.5),
                 Text(
                   "Hello, I'm",
                   style: theme.textTheme.headlineMedium?.copyWith(
@@ -95,8 +96,9 @@ class HomePageWidget extends StatelessWidget {
                 Text(
                   "Naman",
                   style: theme.textTheme.headlineMedium?.copyWith(
-                    fontSize: 60,
+                    fontSize: 72,
                     fontWeight: FontWeight.w800,
+                    color: theme.colorScheme.primary.withAlpha(200),
                     // height: 1.5,
                   ),
                 ),
