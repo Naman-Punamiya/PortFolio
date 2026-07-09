@@ -31,7 +31,7 @@ class FooterSection extends StatelessWidget {
                 children: [
                   Expanded(
                     child: Divider(
-                      color: theme.dividerColor.withValues(alpha: 0.55),
+                      color: theme.dividerColor.withValues(alpha: 1),
                     ),
                   ),
                   Padding(
@@ -47,32 +47,36 @@ class FooterSection extends StatelessWidget {
                   ),
                   Expanded(
                     child: Divider(
-                      color: theme.dividerColor.withValues(alpha: 0.55),
+                      color: theme.dividerColor.withValues(alpha: 0.75),
                     ),
                   ),
                 ],
               ),
               const SizedBox(height: AppLayout.footerConnectGap),
-              Wrap(
-                spacing: AppLayout.footerSocialGap,
-                runSpacing: AppLayout.footerSocialGap,
-                alignment: WrapAlignment.center,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                // spacing: AppLayout.footerSocialGap,
+                // runSpacing: AppLayout.footerSocialGap,
+                // alignment: WrapAlignment.center,
                 children: const [
                   _SocialIconButton(
                     label: 'GitHub',
                     asset: 'Github_white.png',
                     url: SnsLinks.github,
                   ),
+                  SizedBox(width: AppSpacing.lg),
                   _SocialIconButton(
                     label: 'LinkedIn',
                     asset: 'linkedin_white.png',
                     url: SnsLinks.linkedin,
                   ),
+                  SizedBox(width: AppSpacing.md),
                   _SocialIconButton(
                     label: 'Instagram',
                     asset: 'Instagram_white.png',
                     url: SnsLinks.instagram,
                   ),
+                  SizedBox(width: AppSpacing.md),
                   _SocialIconButton(
                     label: 'Discord',
                     asset: 'Discord_white.png',
@@ -133,13 +137,14 @@ class _SocialIconButton extends StatelessWidget {
               color: theme.colorScheme.surface,
               shape: BoxShape.circle,
               border: Border.all(
-                color: theme.dividerColor.withValues(alpha: 0.45),
+                color: theme.dividerColor.withValues(alpha: 0.75),
+                width: 2,
               ),
             ),
             alignment: Alignment.center,
-            child: Image.asset(asset, width: 24),
+            child: Image.asset(asset, width: 24,color: theme.colorScheme.onSurface,),
           ),
-          const SizedBox(height: AppSpacing.xs),
+          const SizedBox(height: AppSpacing.xs/2),
           Text(
             label,
             style: theme.textTheme.bodySmall?.copyWith(

@@ -7,7 +7,7 @@ class AppContact {
       'Have a project in mind, an internship opportunity, or just want to connect? I\'d love to hear from you.';
 
   static const String emailTitle = 'Email';
-  static const String emailValue = 'naman.punamiya@gmail.com';
+  static const String emailValue = 'namanpunamiya1@gmail.com';
   static const String emailSubtitle = 'I usually respond within 24 hours.';
 
   static const String availabilityTitle = 'Available For';

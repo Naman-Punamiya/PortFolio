@@ -66,7 +66,7 @@ class ContactSection extends StatelessWidget {
   Widget _buildDesktopContent(BuildContext context) {
     final theme = Theme.of(context);
     return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         ConstrainedBox(
           constraints: const BoxConstraints(
@@ -127,7 +127,7 @@ class _ContactIntro extends StatelessWidget {
           style: theme.textTheme.bodyLarge?.copyWith(
             color: AppColors.textSecondary,
             height: 1.7,
-            fontSize: 18,
+            fontSize: 16,
           ),
         ),
         const SizedBox(height: AppSpacing.md),
@@ -152,7 +152,7 @@ class _ContactIntro extends StatelessWidget {
           theme: theme,
           icon: Icons.work_outline_rounded,
           title: AppContact.availabilityTitle,
-          primaryText: AppContact.availabilityItems.first,
+          primaryText: null,
           secondaryText: AppContact.availabilityItems.sublist(1).join(' · '),
           showList: true,
           listItems: AppContact.availabilityItems,
@@ -236,7 +236,9 @@ class _ContactForm extends StatelessWidget {
                     borderRadius: BorderRadius.circular(AppRadius.md),
                     onTap: () {},
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppSpacing.md,
+                      ),
                       child: Row(
                         children: [
                           Icon(
@@ -286,7 +288,7 @@ class _ContactInfoCard extends StatelessWidget {
   final ThemeData theme;
   final IconData icon;
   final String title;
-  final String primaryText;
+  final String? primaryText;
   final String secondaryText;
   final bool showList;
   final List<String> listItems;
@@ -313,11 +315,7 @@ class _ContactInfoCard extends StatelessWidget {
               shape: BoxShape.circle,
             ),
             alignment: Alignment.center,
-            child: Icon(
-              icon,
-              color: theme.colorScheme.primary,
-              size: 22,
-            ),
+            child: Icon(icon, color: theme.colorScheme.primary, size: 26),
           ),
           const SizedBox(width: AppSpacing.md),
           Expanded(
@@ -327,20 +325,38 @@ class _ContactInfoCard extends StatelessWidget {
                 Text(
                   title,
                   style: theme.textTheme.titleMedium?.copyWith(
-                    fontSize: 18,
+                    fontSize: 16,
                     fontWeight: FontWeight.w700,
                     color: AppColors.textPrimary,
                   ),
                 ),
                 const SizedBox(height: AppSpacing.xs),
-                Text(
-                  primaryText,
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    color: AppColors.textPrimary,
-                    height: 1.4,
-                    fontSize: 15,
-                  ),
-                ),
+                primaryText != null
+                    ? Text(
+                        primaryText!,
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: AppColors.textPrimary,
+                          height: 1.4,
+                          fontSize: 13,
+                        ),
+                      )
+                    : const SizedBox.shrink(),
+                // Text(
+                //   primaryText ,
+                //   style: theme.textTheme.bodyMedium?.copyWith(
+                //     color: AppColors.textPrimary,
+                //     height: 1.4,
+                //     fontSize: 15,
+                //   ),
+                // ),
+                // Text(
+                // primaryText,
+                // style: theme.textTheme.bodyMedium?.copyWith(
+                // color: AppColors.textPrimary,
+                // height: 1.4,
+                // fontSize: 15,
+                // ),
+                // ),
                 if (showList) ...[
                   const SizedBox(height: AppSpacing.xs),
                   for (final item in listItems)
@@ -350,7 +366,7 @@ class _ContactInfoCard extends StatelessWidget {
                         children: [
                           Icon(
                             Icons.check,
-                            size: 14,
+                            size: 16,
                             color: theme.colorScheme.primary,
                           ),
                           const SizedBox(width: AppSpacing.xs),
@@ -358,7 +374,7 @@ class _ContactInfoCard extends StatelessWidget {
                             item,
                             style: theme.textTheme.bodyMedium?.copyWith(
                               color: AppColors.textSecondary,
-                              fontSize: 14,
+                              fontSize: 13,
                             ),
                           ),
                         ],
@@ -370,7 +386,7 @@ class _ContactInfoCard extends StatelessWidget {
                     secondaryText,
                     style: theme.textTheme.bodySmall?.copyWith(
                       color: AppColors.textSecondary,
-                      fontSize: 13,
+                      fontSize: 12,
                     ),
                   ),
                 ],
@@ -382,6 +398,7 @@ class _ContactInfoCard extends StatelessWidget {
     );
   }
 }
+
 class _DecorCircle extends StatelessWidget {
   const _DecorCircle({required this.size, required this.color});
 
@@ -393,10 +410,7 @@ class _DecorCircle extends StatelessWidget {
     return Container(
       width: size,
       height: size,
-      decoration: BoxDecoration(
-        color: color,
-        shape: BoxShape.circle,
-      ),
+      decoration: BoxDecoration(color: color, shape: BoxShape.circle),
     );
   }
 }
@@ -416,10 +430,7 @@ class _DecorDots extends StatelessWidget {
         (index) => Container(
           width: 6,
           height: 6,
-          decoration: BoxDecoration(
-            color: color,
-            shape: BoxShape.circle,
-          ),
+          decoration: BoxDecoration(color: color, shape: BoxShape.circle),
         ),
       ),
     );

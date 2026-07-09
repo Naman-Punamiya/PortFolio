@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:my_portfolio/app/theme/app_radius.dart';
 import 'package:my_portfolio/app/theme/app_spacing.dart';
 
 class AboutDesktopPart extends StatelessWidget {
