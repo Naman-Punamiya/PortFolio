@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:my_portfolio/app/theme/app_radius.dart';
 import 'package:my_portfolio/app/theme/app_shadows.dart';
 import 'package:my_portfolio/app/theme/app_spacing.dart';
+import 'package:my_portfolio/core/models/tech_chip.dart';
 import 'package:my_portfolio/core/utils/project_utils.dart';
 import 'dart:js' as js;
+
+import 'package:url_launcher/url_launcher.dart';
 
 class ProjectCardWidget extends StatelessWidget {
   final ProjectUtils project;
@@ -12,118 +15,145 @@ class ProjectCardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenSize = MediaQuery.of(context).size;
     final theme = Theme.of(context);
     return Container(
       clipBehavior: Clip.antiAlias,
-      height: 280,
-      width: 250,
       decoration: BoxDecoration(
-        border: Border(
-          top: BorderSide(color: theme.colorScheme.outline, width: 2),
-          left: BorderSide(color: theme.colorScheme.outline, width: 2),
-        ),
         borderRadius: BorderRadius.circular(AppRadius.sm + 2),
         boxShadow: AppShadows.small,
-        color: theme.colorScheme.surface,
+        color: Colors.white,
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Image.asset(
-            project.image,
-            height: 140,
-            width: 250,
-            fit: BoxFit.cover,
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(
-              AppSpacing.md,
-              AppSpacing.md + AppSpacing.xs,
-              AppSpacing.md,
-              AppSpacing.md,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 28),
+        child: Row(
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(AppRadius.md),
+                border: Border.all(color: Colors.black12, width: 1),
+              ),
+              child: Image.asset(project.image, width: screenSize.width * 0.25),
             ),
-            child: Text(
-              project.title,
-              style: theme.textTheme.titleLarge?.copyWith(fontSize: 16),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(
-              AppSpacing.md,
-              0,
-              AppSpacing.md,
-              AppSpacing.md,
-            ),
-            child: Text(
-              project.subtitle,
-              style: theme.textTheme.bodySmall?.copyWith(
-                fontSize: 12,
-                fontWeight: FontWeight.w600,
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.only(left: 24.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      project.title,
+                      style: theme.textTheme.titleLarge?.copyWith(
+                        fontSize: 24,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    SizedBox(height: 8),
+                    Text(
+                      project.subtitle,
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    SizedBox(height: 20),
+                    Text(
+                      project.description,
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    SizedBox(height: 16),
+                    Wrap(
+                      spacing: AppSpacing.sm,
+                      runSpacing: AppSpacing.sm,
+                      children: project.techs!
+                          .map((tech) => TechChip(text: tech))
+                          .toList(),
+                    ),
+                    SizedBox(height: 16),
+                    Row(
+                      children: [
+                        InkWell(
+                          onTap: () => openUrl(project.github!),
+                          child: Row(
+                            children: [
+                              Image.asset(
+                                "Github_white.png",
+                                width: 20,
+                                color: Colors.black,
+                              ),
+                              SizedBox(width: AppSpacing.sm),
+                              Text(
+                                "Github",
+                                style: theme.textTheme.bodySmall?.copyWith(
+                                  color: Colors.black,
+                                  fontSize: 13,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(width: 20),
+                        Container(
+                          width: 1,
+                          height: 20,
+                          color: Colors.grey.shade300,
+                        ),
+                        SizedBox(width: 20),
+                        if (project.iosLink != null)
+                          InkWell(
+                            onTap: () => openUrl(project.iosLink!),
+                            child: Image.asset(
+                              "apple.png",
+                              width: 20,
+                              color: Colors.black,
+                            ),
+                          ),
+                        if (project.androidLink != null)
+                          Padding(
+                            padding: const EdgeInsets.only(left: AppSpacing.sm),
+                            child: InkWell(
+                              onTap: () => openUrl(project.androidLink!),
+                              child: Image.asset(
+                                "android.png",
+                                width: 24,
+                                color: Colors.black,
+                              ),
+                            ),
+                          ),
+                        if (project.webLink != null)
+                          Padding(
+                            padding: const EdgeInsets.only(left: AppSpacing.sm),
+                            child: InkWell(
+                              onTap: () => openUrl(project.webLink!),
+                              child: Image.asset(
+                                "web.png",
+                                width: 20,
+                                color: Colors.black,
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-          Spacer(),
-          Container(
-            color: theme.colorScheme.primary,
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.md,
-              vertical: AppSpacing.sm + AppSpacing.xs,
-            ),
-            child: Row(
-              children: [
-                Text(
-                  "Available on:",
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: theme.colorScheme.onPrimary,
-                    fontSize: 10,
-                  ),
-                ),
-                Spacer(),
-                if (project.iosLink != null)
-                  InkWell(
-                    onTap: () {
-                      js.context.callMethod('open', [project.iosLink]);
-                    },
-                      child: Image.asset(
-                        "apple.png",
-                        width: 17,
-                        color: theme.colorScheme.onPrimary,
-                      ),
-                  ),
-                if (project.androidLink != null)
-                  Padding(
-                    padding: const EdgeInsets.only(left: AppSpacing.sm),
-                    child: InkWell(
-                      onTap: () {
-                        js.context.callMethod('open', [project.androidLink]);
-                      },
-                      child: Image.asset(
-                        "android.png",
-                        width: 18,
-                        color: theme.colorScheme.onPrimary,
-                      ),
-                    ),
-                  ),
-                if (project.webLink != null)
-                  Padding(
-                    padding: const EdgeInsets.only(left: AppSpacing.sm),
-                    child: InkWell(
-                      onTap: () {
-                        js.context.callMethod('open', [project.webLink]);
-                      },
-                      child: Image.asset(
-                        "web.png",
-                        width: 17,
-                        color: theme.colorScheme.onPrimary,
-                      ),
-                    ),
-                  ),
-              ],
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
+  }
+
+  Future<void> openUrl(String url) async {
+    final uri = Uri.parse(url);
+
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    }
   }
 }

@@ -2,6 +2,10 @@ class ProjectUtils {
   final String image;
   final String title;
   final String subtitle;
+  final String description;
+  final List<String>? techs;
+  final String? github;
+  final String? liveDemo;
   final String? androidLink;
   final String? iosLink;
   final String? webLink;
@@ -10,39 +14,12 @@ class ProjectUtils {
     required this.image,
     required this.title,
     required this.subtitle,
+    required this.description,
+    this.techs,
+    this.github,
+    this.liveDemo,
     this.androidLink,
     this.iosLink,
     this.webLink,
   });
 }
-
-List<ProjectUtils> allProjectUtils = [
-  ProjectUtils(
-    image: "projects/HomePage.jpg",
-    title: "GDG App",
-    subtitle: "This is an demo app made for UI Feature.",
-    androidLink: "",
-    iosLink: "",
-  ),
-  ProjectUtils(
-    image: "projects/HomePage.jpg",
-    title: "GDG App",
-    subtitle: "This is an demo app made for UI Feature.",
-    androidLink: "",
-    iosLink: "",
-  ),
-  ProjectUtils(
-    image: "projects/HomePage.jpg",
-    title: "GDG App",
-    subtitle: "This is an demo app made for UI Feature.",
-    androidLink: "",
-    iosLink: "",
-  ),
-  ProjectUtils(
-    image: "projects/HomePage.jpg",
-    title: "GDG App",
-    subtitle: "This is an demo app made for UI Feature.",
-    androidLink: "",
-    iosLink: "",
-  ),
-];

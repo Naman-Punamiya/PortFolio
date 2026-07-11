@@ -8,7 +8,6 @@ class AboutDesktopPart extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final screenSize = MediaQuery.of(context).size;
-    final screenWidth = screenSize.width;
     return Container(
       color: theme.scaffoldBackgroundColor,
       margin: const EdgeInsets.symmetric(horizontal: AppSpacing.sm),

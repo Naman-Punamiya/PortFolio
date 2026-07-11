@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:my_portfolio/core/constants/project_list.dart';
 import 'package:my_portfolio/core/constants/size.dart';
 import 'package:my_portfolio/features/header/appbar.dart';
 import 'package:my_portfolio/features/models/drawer_mobile.dart';
 import 'package:my_portfolio/features/footer/footer_section.dart';
 import 'package:my_portfolio/features/models/project_card.dart';
 import 'package:my_portfolio/features/home/home_page.dart';
-import 'package:my_portfolio/core/utils/project_utils.dart';
 import 'package:my_portfolio/app/theme/app_spacing.dart';
 
 class ProjectsSection extends StatelessWidget {
@@ -50,22 +50,48 @@ class ProjectsSection extends StatelessWidget {
                     children: [
                       const SizedBox(height: AppSpacing.lg),
                       Text(
-                        "Projects",
-                        style: theme.textTheme.titleLarge,
-                      ),
-                      const SizedBox(height: AppSpacing.xxl),
-                      ConstrainedBox(
-                        constraints: BoxConstraints(maxWidth: 800),
-                        child: Wrap(
-                          spacing: 25,
-                          runSpacing: 25,
-                          children: [
-                            for (int i = 0; i < allProjectUtils.length; i++)
-                              ProjectCardWidget(project: allProjectUtils[i]),
-                          ],
+                        "PROJECTS",
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
                         ),
                       ),
-                      const SizedBox(height: AppSpacing.xxl),
+                      Text(
+                        "Featured Projects",
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          fontSize: 32,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      SizedBox(height: AppSpacing.md),
+                      Text(
+                        textAlign: TextAlign.center,
+                        "A section of projects I've built with passion and dedication.\nEach project reflects my problem-solving skills and love to code.",
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w700,
+                          color: theme.colorScheme.onSurface.withOpacity(0.6),
+                        ),
+                      ),
+                      const SizedBox(height: AppSpacing.lg),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 40.0),
+                        child: GridView.builder(
+                          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            crossAxisSpacing: 25,
+                            mainAxisSpacing: 25,
+                            childAspectRatio: 2.1,
+                          ),
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: allProjectUtils.length,
+                          itemBuilder: (context, index) {
+                            return ProjectCardWidget(project: allProjectUtils[index]);
+                          },
+                        ),
+                      ),
+                      const SizedBox(height: AppSpacing.lg),
                       FooterSection(),
                     ],
                   ),
