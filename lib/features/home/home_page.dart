@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_portfolio/core/constants/size.dart';
+import 'package:my_portfolio/core/utils/resume_helper.dart';
 import 'package:my_portfolio/features/header/appbar.dart';
 import 'package:my_portfolio/features/footer/contact_section.dart';
 import 'package:my_portfolio/features/models/drawer_mobile.dart';
@@ -64,13 +65,16 @@ class _HomePageState extends State<HomePage> {
                       SizedBox(key: navbarkeys.first),
                       // SizedBox(height: AppSpacing.lg + AppSpacing.sm),
                       HomePageWidget(
-                        onTap: () {
+                        onTapProject: () {
                           Navigator.of(context).pushReplacement(
                             MaterialPageRoute(
                               builder: (context) =>
                                   ProjectsSection(navbarkeys: navbarkeys),
                             ),
                           );
+                        },
+                        onTapResume: () {
+                          openResume();
                         },
                       ),
                       Container(
@@ -135,14 +139,13 @@ class _HomePageState extends State<HomePage> {
                                 ],
                               ),
                             ),
-                            SizedBox(height: AppSpacing.xxl+AppSpacing.sm),
+                            SizedBox(height: AppSpacing.xxl + AppSpacing.sm),
                             SkillsWidget(),
                           ],
                         ),
                       ),
 
                       // const SizedBox(height: AppSpacing.lg + AppSpacing.sm),
-
                       ContactSection(),
 
                       FooterSection(),
@@ -193,8 +196,6 @@ void scrollToSection(
       ),
     );
   } else if (navIndex == 5) {
-    // Navigator.of(context).pushReplacement(
-    //   MaterialPageRoute(builder: (context) => ),
-    // );
+    openResume();
   }
 }

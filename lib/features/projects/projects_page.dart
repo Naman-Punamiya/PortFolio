@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:my_portfolio/core/constants/project_list.dart';
 import 'package:my_portfolio/core/constants/size.dart';
+import 'package:my_portfolio/core/repositories/project_repository.dart';
+import 'package:my_portfolio/core/utils/project_utils.dart';
 import 'package:my_portfolio/features/header/appbar.dart';
 import 'package:my_portfolio/features/models/drawer_mobile.dart';
 import 'package:my_portfolio/features/footer/footer_section.dart';
@@ -8,15 +9,36 @@ import 'package:my_portfolio/features/models/project_card.dart';
 import 'package:my_portfolio/features/home/home_page.dart';
 import 'package:my_portfolio/app/theme/app_spacing.dart';
 
-class ProjectsSection extends StatelessWidget {
+class ProjectsSection extends StatefulWidget {
   final List<GlobalKey> navbarkeys;
   const ProjectsSection({super.key, required this.navbarkeys});
+
+  @override
+  State<ProjectsSection> createState() => _ProjectsSectionState();
+}
+
+class _ProjectsSectionState extends State<ProjectsSection> {
+  late final ProjectRepository _repository;
+  late final Future<List<ProjectUtils>> _projectsFuture;
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    _repository = ProjectRepository();
+    _projectsFuture = _repository.getProjects();
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final scaffoldKey = GlobalKey<ScaffoldState>();
-    final scrollController = ScrollController();
     return LayoutBuilder(
       builder: (context, constraints) {
         return Scaffold(
@@ -25,26 +47,26 @@ class ProjectsSection extends StatelessWidget {
               ? null
               : DrawerMobile(
                   onNavItemTap: (int navIndex) {
-                    scrollToSection(navIndex, navbarkeys, context);
+                    scrollToSection(navIndex, widget.navbarkeys, context);
                     scaffoldKey.currentState?.closeEndDrawer();
                   },
                 ),
           backgroundColor: theme.scaffoldBackgroundColor,
           body: Column(
             children: [
-                CustomAppBar(
-                  activeIndex: 2,
-                  onLogoTap: () {},
-                  onMenuTap: () {
-                    scaffoldKey.currentState?.openEndDrawer();
-                  },
-                  onNavMenuTap: (int navIndex) {
-                    scrollToSection(navIndex, navbarkeys, context);
-                  },
-                ),
+              CustomAppBar(
+                activeIndex: 2,
+                onLogoTap: () {},
+                onMenuTap: () {
+                  scaffoldKey.currentState?.openEndDrawer();
+                },
+                onNavMenuTap: (int navIndex) {
+                  scrollToSection(navIndex, widget.navbarkeys, context);
+                },
+              ),
               Expanded(
                 child: SingleChildScrollView(
-                  controller: scrollController,
+                  controller: _scrollController,
                   scrollDirection: Axis.vertical,
                   child: Column(
                     children: [
@@ -74,22 +96,81 @@ class ProjectsSection extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: AppSpacing.lg),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 40.0),
-                        child: GridView.builder(
-                          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
-                            crossAxisSpacing: 25,
-                            mainAxisSpacing: 25,
-                            childAspectRatio: 2.1,
-                          ),
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemCount: allProjectUtils.length,
-                          itemBuilder: (context, index) {
-                            return ProjectCardWidget(project: allProjectUtils[index]);
-                          },
-                        ),
+                      FutureBuilder<List<ProjectUtils>>(
+                        future: _projectsFuture,
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const Padding(
+                              padding: EdgeInsets.symmetric(vertical: 80),
+                              child: Center(child: CircularProgressIndicator()),
+                            );
+                          }
+
+                          if (snapshot.hasError) {
+                            return Padding(
+                              padding: const EdgeInsets.all(40),
+                              child: Center(
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    const Icon(
+                                      Icons.error_outline,
+                                      size: 60,
+                                      color: Colors.red,
+                                    ),
+                                    const SizedBox(height: 16),
+                                    Text(
+                                      "Unable to load projects",
+                                      style: theme.textTheme.titleMedium,
+                                    ),
+                                    const SizedBox(height: 8),
+                                    Text(
+                                      "Please try again later.",
+                                      style: theme.textTheme.bodyMedium,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          }
+
+                          final List<ProjectUtils> projects =
+                              snapshot.data ?? [];
+
+                          if (projects.isEmpty) {
+                            return const Padding(
+                              padding: EdgeInsets.symmetric(vertical: 80),
+                              child: Center(
+                                child: Text(
+                                  "No projects found.",
+                                  style: TextStyle(fontSize: 18),
+                                ),
+                              ),
+                            );
+                          }
+
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 40),
+                            child: GridView.builder(
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemCount: projects.length,
+                              gridDelegate:
+                                  const SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 2,
+                                    crossAxisSpacing: 25,
+                                    mainAxisSpacing: 25,
+                                    childAspectRatio: 2.1,
+                                  ),
+                              itemBuilder: (context, index) {
+                                return ProjectCardWidget(
+                                  project: projects[index],
+                                );
+                              },
+                            ),
+                          );
+                        },
                       ),
                       const SizedBox(height: AppSpacing.lg),
                       FooterSection(),

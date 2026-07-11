@@ -2,6 +2,7 @@ import 'package:my_portfolio/core/utils/project_utils.dart';
 
 List<ProjectUtils> allProjectUtils = [
   ProjectUtils(
+    id: "tracklet_savebuddy",
     image: "projects/HomePage.jpg",
     title: "Tracklet SaveBuddy",
     subtitle: "Expense Tracker",
@@ -15,6 +16,7 @@ List<ProjectUtils> allProjectUtils = [
     webLink: "",
   ),
   ProjectUtils(
+    id: "local_file_share",
     image: "projects/HomePage.jpg",
     title: "Local File Share",
     subtitle: "File Sharing App",

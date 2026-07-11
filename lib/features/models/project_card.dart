@@ -4,7 +4,6 @@ import 'package:my_portfolio/app/theme/app_shadows.dart';
 import 'package:my_portfolio/app/theme/app_spacing.dart';
 import 'package:my_portfolio/core/models/tech_chip.dart';
 import 'package:my_portfolio/core/utils/project_utils.dart';
-import 'dart:js' as js;
 
 import 'package:url_launcher/url_launcher.dart';
 

@@ -1,57 +1,116 @@
 import 'package:flutter/material.dart';
-import 'package:my_portfolio/app/theme/app_colors.dart';
 import 'package:my_portfolio/app/theme/app_layout.dart';
 import 'package:my_portfolio/app/theme/app_shadows.dart';
 import 'package:my_portfolio/core/constants/size.dart';
-import 'package:my_portfolio/core/constants/skill_items.dart';
 import 'package:my_portfolio/app/theme/app_radius.dart';
 import 'package:my_portfolio/app/theme/app_spacing.dart';
+import 'package:my_portfolio/core/repositories/skill_repository.dart';
+import 'package:my_portfolio/core/utils/skill_utils.dart';
 
-class SkillsWidget extends StatelessWidget {
+class SkillsWidget extends StatefulWidget {
   const SkillsWidget({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final screenSize = MediaQuery.of(context).size;
-    final screenWidth = screenSize.width;
-    return screenWidth >= minDesktopWidth
-        ? buildDesktopSkillPage(context)
-        : buildMobileSkillPage(context);
+  State<SkillsWidget> createState() => _SkillsWidgetState();
+}
+
+class _SkillsWidgetState extends State<SkillsWidget> {
+  late final SkillRepository _repository;
+  late final Future<List<SkillUtils>> _skillsFuture;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _repository = SkillRepository();
+    _skillsFuture = _repository.getSkills();
   }
 
-  Widget buildMobileSkillPage(BuildContext context) {
+  @override
+  Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+
+    return FutureBuilder<List<SkillUtils>>(
+      future: _skillsFuture,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Padding(
+            padding: EdgeInsets.all(60),
+            child: Center(
+              child: CircularProgressIndicator(),
+            ),
+          );
+        }
+
+        if (snapshot.hasError) {
+          return Center(
+            child: Text(
+              snapshot.error.toString(),
+            ),
+          );
+        }
+
+        if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          return const Center(
+            child: Text("No skills found."),
+          );
+        }
+
+        final allSkills = snapshot.data!;
+
+        final platformItems = allSkills
+            .where((skill) => skill.type == "platform")
+            .toList();
+
+        final skillItems = allSkills
+            .where((skill) => skill.type == "technology")
+            .toList();
+
+        return screenWidth >= minDesktopWidth
+            ? buildDesktopSkillPage(
+                context,
+                platformItems,
+                skillItems,
+              )
+            : buildMobileSkillPage(
+                context,
+                platformItems,
+                skillItems,
+              );
+      },
+    );
+  }
+
+  Widget buildMobileSkillPage(BuildContext context, List<SkillUtils> platformItems, List<SkillUtils> skillItems) {
     final theme = Theme.of(context);
     return ConstrainedBox(
       constraints: const BoxConstraints(maxWidth: AppLayout.sectionMaxWidth),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          for (int i = 0; i < platformItems.length; i++)
+          for (final platform in platformItems)
             Padding(
               padding: const EdgeInsets.only(bottom: AppSpacing.md),
               child: _SkillFeatureCard(
-                iconPath: platformItems[i]["img"],
-                title: platformItems[i]['title'],
-                subtitle: platformItems[i]['subtitle'],
+                iconPath: platform.image,
+                title: platform.title,
+                subtitle: platform.subtitle ?? "",
                 theme: theme,
                 iconSize: AppLayout.mobileSkillCardIconSize,
               ),
             ),
           const SizedBox(height: AppSpacing.lg),
-          const _SectionLabel(
-            icon: Icons.layers_outlined,
-            title: 'Tech Stack',
-          ),
+          const _SectionLabel(icon: Icons.layers_outlined, title: 'Tech Stack'),
           const SizedBox(height: AppSpacing.lg),
           Wrap(
             spacing: AppSpacing.md,
             runSpacing: AppSpacing.md,
             alignment: WrapAlignment.start,
             children: [
-              for (int i = 0; i < skillItems.length; i++)
+              for (final skill in skillItems)
                 _SkillPill(
-                  title: skillItems[i]['title'],
-                  iconPath: skillItems[i]["img"],
+                  title: skill.title,
+                  iconPath: skill.image,
                   theme: theme,
                   iconSize: AppLayout.skillIconSize,
                 ),
@@ -62,13 +121,15 @@ class SkillsWidget extends StatelessWidget {
     );
   }
 
-  Widget buildDesktopSkillPage(BuildContext context) {
+  Widget buildDesktopSkillPage(BuildContext context, List<SkillUtils> platformItems, List<SkillUtils> skillItems) {
     final theme = Theme.of(context);
     final dividerColor = theme.colorScheme.outline.withValues(alpha: 0.28);
     return Expanded(
       child: Center(
         child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: AppLayout.sectionMaxWidth),
+          constraints: const BoxConstraints(
+            maxWidth: AppLayout.sectionMaxWidth,
+          ),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -88,16 +149,17 @@ class SkillsWidget extends StatelessWidget {
                       itemCount: platformItems.length,
                       gridDelegate:
                           const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        mainAxisSpacing: AppSpacing.md,
-                        crossAxisSpacing: AppSpacing.md,
-                        mainAxisExtent: AppLayout.skillFeatureCardMinHeight,
-                      ),
-                      itemBuilder: (context, i) {
+                            crossAxisCount: 2,
+                            mainAxisSpacing: AppSpacing.md,
+                            crossAxisSpacing: AppSpacing.md,
+                            mainAxisExtent: AppLayout.skillFeatureCardMinHeight,
+                          ),
+                      itemBuilder: (context, index) {
+                        final platform = platformItems[index];
                         return _SkillFeatureCard(
-                          iconPath: platformItems[i]["img"],
-                          title: platformItems[i]['title'],
-                          subtitle: platformItems[i]['subtitle'],
+                          iconPath: platform.image,
+                          title: platform.title,
+                          subtitle: platform.subtitle ?? "",
                           theme: theme,
                           iconSize: 24,
                         );
@@ -107,7 +169,9 @@ class SkillsWidget extends StatelessWidget {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: AppLayout.sectionColumnGap),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppLayout.sectionColumnGap,
+                ),
                 child: SizedBox(
                   height: AppLayout.sectionDividerHeight,
                   child: VerticalDivider(
@@ -133,10 +197,10 @@ class SkillsWidget extends StatelessWidget {
                       spacing: AppSpacing.md,
                       runSpacing: AppSpacing.md,
                       children: [
-                        for (int i = 0; i < skillItems.length; i++)
+                        for (final skill in skillItems)
                           _SkillPill(
-                            title: skillItems[i]['title'],
-                            iconPath: skillItems[i]["img"],
+                            title: skill.title,
+                            iconPath: skill.image,
                             theme: theme,
                             iconSize: AppLayout.skillIconSize,
                           ),
@@ -154,10 +218,7 @@ class SkillsWidget extends StatelessWidget {
 }
 
 class _SectionLabel extends StatelessWidget {
-  const _SectionLabel({
-    required this.icon,
-    required this.title,
-  });
+  const _SectionLabel({required this.icon, required this.title});
 
   final IconData icon;
   final String title;
@@ -168,18 +229,14 @@ class _SectionLabel extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(
-          icon,
-          color: theme.colorScheme.primary,
-          size: 22,
-        ),
+        Icon(icon, color: theme.colorScheme.primary, size: 22),
         const SizedBox(width: AppSpacing.sm),
         Text(
           title,
           style: theme.textTheme.titleLarge?.copyWith(
             fontSize: 22,
             fontWeight: FontWeight.w700,
-            color: AppColors.textPrimary,
+            color: theme.colorScheme.onSurface,
           ),
         ),
       ],
@@ -226,11 +283,7 @@ class _SkillFeatureCard extends StatelessWidget {
                 shape: BoxShape.circle,
               ),
               alignment: Alignment.center,
-              child: Image.asset(
-                iconPath,
-                width: iconSize,
-                height: iconSize,
-              ),
+              child: Image.asset(iconPath, width: iconSize, height: iconSize),
             ),
             const SizedBox(width: AppSpacing.md),
             Expanded(
@@ -243,7 +296,7 @@ class _SkillFeatureCard extends StatelessWidget {
                     style: theme.textTheme.titleLarge?.copyWith(
                       fontSize: 22,
                       fontWeight: FontWeight.w700,
-                      color: AppColors.textPrimary,
+                      color: theme.colorScheme.onSurface,
                     ),
                   ),
                   const SizedBox(height: AppSpacing.sm),
@@ -251,7 +304,7 @@ class _SkillFeatureCard extends StatelessWidget {
                     subtitle,
                     style: theme.textTheme.bodyLarge?.copyWith(
                       fontSize: 16,
-                      color: AppColors.textSecondary,
+                      color: theme.colorScheme.onSurfaceVariant,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -296,18 +349,14 @@ class _SkillPill extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Image.asset(
-            iconPath,
-            width: iconSize,
-            height: iconSize,
-          ),
+          Image.asset(iconPath, width: iconSize, height: iconSize),
           const SizedBox(width: AppSpacing.sm),
           Text(
             title,
             style: theme.textTheme.titleMedium?.copyWith(
               fontSize: 16,
               fontWeight: FontWeight.w600,
-              color: AppColors.textPrimary,
+              color: theme.colorScheme.onSurface,
             ),
           ),
         ],

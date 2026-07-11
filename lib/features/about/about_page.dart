@@ -3,7 +3,8 @@ import 'package:my_portfolio/app/theme/app_colors.dart';
 import 'package:my_portfolio/app/theme/app_radius.dart';
 import 'package:my_portfolio/core/constants/goal_items.dart';
 import 'package:my_portfolio/core/constants/size.dart';
-import 'package:my_portfolio/core/constants/skill_items.dart';
+import 'package:my_portfolio/core/lists/skill_items.dart';
+import 'package:my_portfolio/core/utils/skill_utils.dart';
 import 'package:my_portfolio/features/footer/footer_section.dart';
 import 'package:my_portfolio/features/header/appbar.dart';
 import 'package:my_portfolio/features/models/drawer_mobile.dart';
@@ -22,6 +23,9 @@ class AboutPage extends StatelessWidget {
     final screenWidth = screenSize.width;
     final scaffoldKey = GlobalKey<ScaffoldState>();
     final scrollController = ScrollController();
+    final List<SkillUtils> skillItems = allSkills
+        .where((skill) => skill.type == "technology")
+        .toList();
 
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -476,9 +480,11 @@ class AboutPage extends StatelessWidget {
                                                   childAspectRatio: 3.0,
                                                 ),
                                             itemBuilder: (context, index) {
+                                              final skill = skillItems[index];
+
                                               return techCard(
-                                                skillItems[index]['title'],
-                                                skillItems[index]['img'],
+                                                skill.title,
+                                                skill.image,
                                                 theme,
                                               );
                                             },

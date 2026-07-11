@@ -1,77 +1,117 @@
 import 'package:flutter/material.dart';
 import 'package:my_portfolio/core/constants/size.dart';
 import 'package:my_portfolio/app/theme/app_spacing.dart';
+import 'package:my_portfolio/core/repositories/profile_repository.dart';
+import 'package:my_portfolio/core/utils/profile_utils.dart';
 
-class HomePageWidget extends StatelessWidget {
-  final void Function()? onTap;
-  const HomePageWidget({super.key, required this.onTap});
+class HomePageWidget extends StatefulWidget {
+  final void Function()? onTapProject;
+  final void Function()? onTapResume;
+  const HomePageWidget({
+    super.key,
+    required this.onTapProject,
+    required this.onTapResume,
+  });
+
+  @override
+  State<HomePageWidget> createState() => _HomePageWidgetState();
+}
+
+class _HomePageWidgetState extends State<HomePageWidget> {
+  late final ProfileRepository _repository;
+  late final Future<ProfileUtils> _profileFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _repository = ProfileRepository();
+    _profileFuture = _repository.getProfile();
+  }
 
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
     final screenWidth = screenSize.width;
-    return screenWidth >= minDesktopWidth
-        ? buildDesktopHomePage(context, screenSize)
-        : buildMobileHomePage(context, screenSize);
+    return FutureBuilder<ProfileUtils>(
+      future: _profileFuture,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return SizedBox(
+            height: screenSize.height,
+            child: const Center(child: CircularProgressIndicator()),
+          );
+        }
+
+        if (snapshot.hasError) {
+          return SizedBox(
+            height: screenSize.height,
+            child: Center(child: Text(snapshot.error.toString())),
+          );
+        }
+
+        if (!snapshot.hasData) {
+          return SizedBox(
+            height: screenSize.height,
+            child: const Center(child: Text("Profile not found.")),
+          );
+        }
+
+        final profile = snapshot.data!;
+
+        return screenWidth >= minDesktopWidth
+            ? buildDesktopHomePage(context, screenSize, profile)
+            : buildMobileHomePage(context, screenSize, profile);
+      },
+    );
   }
 
-  Widget buildMobileHomePage(BuildContext context, Size screenSize) {
+  Widget buildMobileHomePage(
+    BuildContext context,
+    Size screenSize,
+    ProfileUtils profile,
+  ) {
     final theme = Theme.of(context);
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-      height: screenSize.height/1.5,
+      height: screenSize.height / 1.5,
       constraints: const BoxConstraints(minHeight: 350),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Align(
-            alignment: Alignment.topCenter,
-            child: Image.asset("Prog.gif", width: screenSize.width / 1.25),
-          ),
-          Container(
-            padding: const EdgeInsets.only(left: AppSpacing.sm),
-            child: Text(
-              "Hi, I'm Naman 👋\nFlutter Developer &\n Software Engineer\nBuilding clean, scalable and \nbeautiful digital experiences.",
-              style: theme.textTheme.headlineMedium?.copyWith(
-                fontSize: 30,
-                height: 1.5,
-              ),
+          Text(
+            "Hi, I'm ${profile.name.split(' ').first} 👋",
+            style: theme.textTheme.headlineMedium?.copyWith(
+              fontSize: 30,
+              fontWeight: FontWeight.bold,
             ),
           ),
-          Container(
-            margin: const EdgeInsets.symmetric(vertical: AppSpacing.xs),
-            padding: const EdgeInsets.only(left: AppSpacing.xl),
-            width: 350,
-            child: Text(
-              "Mobile Developer / Flutter Developer / Software Engineering",
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: theme.colorScheme.onSurface,
-                fontWeight: FontWeight.w700,
-              ),
+
+          const SizedBox(height: 10),
+
+          Text(
+            profile.designation,
+            style: theme.textTheme.titleLarge?.copyWith(
+              fontWeight: FontWeight.w700,
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.only(left: AppSpacing.lg),
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: theme.colorScheme.surface,
-                foregroundColor: theme.colorScheme.onSurface,
-              ),
-              onPressed: onTap,
-              child: const Text("SEE MY WORKS  -->"),
-            ),
-          ),
+
+          const SizedBox(height: 12),
+
+          Text(profile.heroSubtitle, style: theme.textTheme.bodyMedium),
         ],
       ),
     );
   }
 
-  Widget buildDesktopHomePage(BuildContext context, Size screenSize) {
+  Widget buildDesktopHomePage(
+    BuildContext context,
+    Size screenSize,
+    ProfileUtils profile,
+  ) {
     final theme = Theme.of(context);
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: AppSpacing.sm),
-      height: screenSize.height/1.05,
+      height: screenSize.height / 1.05,
       // constraints: const BoxConstraints(minHeight: 350),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -94,7 +134,7 @@ class HomePageWidget extends StatelessWidget {
                 ),
                 const SizedBox(height: AppSpacing.md),
                 Text(
-                  "Naman",
+                  profile.name,
                   style: theme.textTheme.headlineMedium?.copyWith(
                     fontSize: 72,
                     fontWeight: FontWeight.w800,
@@ -104,7 +144,7 @@ class HomePageWidget extends StatelessWidget {
                 ),
                 const SizedBox(height: AppSpacing.lg),
                 Text(
-                  "Flutter Developer &\nSoftware Engineer",
+                  profile.designation,
                   style: theme.textTheme.bodyMedium?.copyWith(
                     color: theme.colorScheme.onSurface,
                     fontWeight: FontWeight.w700,
@@ -114,7 +154,8 @@ class HomePageWidget extends StatelessWidget {
                 const SizedBox(height: AppSpacing.lg),
                 Text(
                   // "Building clean, scalable and \nbeautiful digital experiences.",
-                  "Building scalable mobile and web applications\nwith Flutter, Spring Boot and PostgreSQL.",
+                  // "Building scalable mobile and web applications\nwith Flutter, Spring Boot and PostgreSQL.",
+                  profile.heroSubtitle,
                   style: theme.textTheme.bodyMedium?.copyWith(
                     color: theme.colorScheme.onSurface,
                     fontWeight: FontWeight.w400,
@@ -132,7 +173,7 @@ class HomePageWidget extends StatelessWidget {
                               .withValues(alpha: 0.35),
                           foregroundColor: theme.colorScheme.onSurface,
                         ),
-                        onPressed: onTap,
+                        onPressed: widget.onTapProject,
                         child: const Text("View Projects"),
                       ),
                     ),
@@ -145,7 +186,7 @@ class HomePageWidget extends StatelessWidget {
                               .withValues(alpha: 0.35),
                           foregroundColor: theme.colorScheme.onSurface,
                         ),
-                        onPressed: onTap,
+                        onPressed: widget.onTapResume,
                         child: const Text("View Resume"),
                       ),
                     ),
@@ -155,7 +196,10 @@ class HomePageWidget extends StatelessWidget {
             ),
           ),
           // SizedBox(width: AppSpacing.xxl),
-          Align(alignment: Alignment.centerRight, child: Image.asset("Prog.gif", width: screenSize.width / 2)),
+          Align(
+            alignment: Alignment.centerRight,
+            child: Image.asset("Prog.gif", width: screenSize.width / 2),
+          ),
         ],
       ),
     );

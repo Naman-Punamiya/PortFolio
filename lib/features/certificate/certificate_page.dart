@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:my_portfolio/core/constants/certificate_items.dart';
+import 'package:my_portfolio/core/lists/certificate_items.dart';
 import 'package:my_portfolio/core/constants/size.dart';
 import 'package:my_portfolio/core/models/certificate_card.dart';
 import 'package:my_portfolio/features/header/appbar.dart';

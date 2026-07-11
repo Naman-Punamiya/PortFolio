@@ -4,7 +4,7 @@ import 'package:my_portfolio/app/theme/app_contact.dart';
 import 'package:my_portfolio/app/theme/app_layout.dart';
 import 'package:my_portfolio/app/theme/app_radius.dart';
 import 'package:my_portfolio/app/theme/app_spacing.dart';
-import 'package:my_portfolio/features/models/sns_links.dart';
+import 'package:my_portfolio/core/lists/social_data.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class FooterSection extends StatelessWidget {
@@ -58,29 +58,29 @@ class FooterSection extends StatelessWidget {
                 // spacing: AppLayout.footerSocialGap,
                 // runSpacing: AppLayout.footerSocialGap,
                 // alignment: WrapAlignment.center,
-                children: const [
+                children: [
                   _SocialIconButton(
                     label: 'GitHub',
                     asset: 'Github_white.png',
-                    url: SnsLinks.github,
+                    url: socialData.github,
                   ),
                   SizedBox(width: AppSpacing.lg),
                   _SocialIconButton(
                     label: 'LinkedIn',
                     asset: 'linkedin_white.png',
-                    url: SnsLinks.linkedin,
+                    url: socialData.linkedin,
                   ),
                   SizedBox(width: AppSpacing.md),
                   _SocialIconButton(
                     label: 'Instagram',
                     asset: 'Instagram_white.png',
-                    url: SnsLinks.instagram,
+                    url: socialData.instagram,
                   ),
                   SizedBox(width: AppSpacing.md),
                   _SocialIconButton(
                     label: 'Discord',
                     asset: 'Discord_white.png',
-                    url: SnsLinks.discord,
+                    url: socialData.email,
                   ),
                 ],
               ),

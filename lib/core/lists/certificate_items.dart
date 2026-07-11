@@ -1,8 +1,8 @@
 import 'package:my_portfolio/core/utils/certificate_utils.dart';
 
 List<CertificateUtils> certificates = [
-
   CertificateUtils(
+    id: 'flutter_bootcamp',
     image: "certificates/flutter.png",
     title: "Flutter Development Bootcamp",
     issuer: "Udemy",
@@ -12,6 +12,7 @@ List<CertificateUtils> certificates = [
   ),
 
   CertificateUtils(
+    id: 'java_programming',
     image: "certificates/java.png",
     title: "Java Programming",
     issuer: "Oracle",
@@ -21,6 +22,7 @@ List<CertificateUtils> certificates = [
   ),
 
   CertificateUtils(
+    id: 'duhacks_5',
     image: "certificates/duhacks.png",
     title: "DUHacks 5.0",
     issuer: "Dharmsinh Desai University",
@@ -28,5 +30,4 @@ List<CertificateUtils> certificates = [
     category: "Achievement",
     certificateLink: "",
   ),
-
 ];
