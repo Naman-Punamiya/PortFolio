@@ -67,6 +67,9 @@ class _ContactSectionState extends State<ContactSection> {
       );
 
       await _repository.sendMessage(message);
+
+      if (!mounted) return;
+
       FocusScope.of(context).unfocus();
       _nameController.clear();
       _emailController.clear();
@@ -115,21 +118,6 @@ class _ContactSectionState extends State<ContactSection> {
       ),
       child: Stack(
         children: [
-          Positioned(
-            top: -AppSpacing.xl,
-            right: -AppSpacing.xl,
-            child: _DecorCircle(
-              size: 180,
-              color: theme.colorScheme.primary.withValues(alpha: 0.06),
-            ),
-          ),
-          Positioned(
-            bottom: AppSpacing.xl,
-            right: AppSpacing.lg,
-            child: _DecorDots(
-              color: theme.colorScheme.primary.withValues(alpha: 0.12),
-            ),
-          ),
           Center(
             child: ConstrainedBox(
               constraints: const BoxConstraints(
@@ -432,8 +420,6 @@ class _ContactInfoCard extends StatelessWidget {
     required this.title,
     required this.primaryText,
     required this.secondaryText,
-    this.showList = false,
-    this.listItems = const [],
   });
 
   final ThemeData theme;
@@ -441,8 +427,6 @@ class _ContactInfoCard extends StatelessWidget {
   final String title;
   final String? primaryText;
   final String secondaryText;
-  final bool showList;
-  final List<String> listItems;
 
   @override
   Widget build(BuildContext context) {
@@ -492,97 +476,18 @@ class _ContactInfoCard extends StatelessWidget {
                         ),
                       )
                     : const SizedBox.shrink(),
-                // Text(
-                //   primaryText ,
-                //   style: theme.textTheme.bodyMedium?.copyWith(
-                //     color: AppColors.textPrimary,
-                //     height: 1.4,
-                //     fontSize: 15,
-                //   ),
-                // ),
-                // Text(
-                // primaryText,
-                // style: theme.textTheme.bodyMedium?.copyWith(
-                // color: AppColors.textPrimary,
-                // height: 1.4,
-                // fontSize: 15,
-                // ),
-                // ),
-                if (showList) ...[
-                  const SizedBox(height: AppSpacing.xs),
-                  for (final item in listItems)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 2),
-                      child: Row(
-                        children: [
-                          Icon(
-                            Icons.check,
-                            size: 16,
-                            color: theme.colorScheme.primary,
-                          ),
-                          const SizedBox(width: AppSpacing.xs),
-                          Text(
-                            item,
-                            style: theme.textTheme.bodyMedium?.copyWith(
-                              color: AppColors.textSecondary,
-                              fontSize: 13,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                ] else ...[
-                  const SizedBox(height: AppSpacing.xs),
-                  Text(
-                    secondaryText,
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: AppColors.textSecondary,
-                      fontSize: 12,
-                    ),
+                const SizedBox(height: AppSpacing.xs),
+                Text(
+                  secondaryText,
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: AppColors.textSecondary,
+                    fontSize: 12,
                   ),
-                ],
+                ),
               ],
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class _DecorCircle extends StatelessWidget {
-  const _DecorCircle({required this.size, required this.color});
-
-  final double size;
-  final Color color;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: size,
-      height: size,
-      decoration: BoxDecoration(color: color, shape: BoxShape.circle),
-    );
-  }
-}
-
-class _DecorDots extends StatelessWidget {
-  const _DecorDots({required this.color});
-
-  final Color color;
-
-  @override
-  Widget build(BuildContext context) {
-    return Wrap(
-      spacing: 8,
-      runSpacing: 8,
-      children: List.generate(
-        12,
-        (index) => Container(
-          width: 6,
-          height: 6,
-          decoration: BoxDecoration(color: color, shape: BoxShape.circle),
-        ),
       ),
     );
   }

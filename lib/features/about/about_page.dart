@@ -138,7 +138,6 @@ class _AboutPageState extends State<AboutPage> {
                           SizedBox(key: widget.navbarkeys.first),
                           Container(
                             key: widget.navbarkeys[1],
-                            height: screenSize.height * 1.95,
                             width: screenWidth,
                             padding: const EdgeInsets.fromLTRB(
                               AppSpacing.lg,
@@ -275,8 +274,9 @@ class _AboutPageState extends State<AboutPage> {
                                                 child,
                                                 loadingProgress,
                                               ) {
-                                                if (loadingProgress == null)
+                                                if (loadingProgress == null){
                                                   return child;
+                                                }
 
                                                 return const Center(
                                                   child:
@@ -342,9 +342,7 @@ class _AboutPageState extends State<AboutPage> {
                                           ),
                                           boxShadow: [
                                             BoxShadow(
-                                              color: Colors.black.withOpacity(
-                                                .1,
-                                              ),
+                                              color: Colors.black.withValues(alpha: 0.1),
                                               blurRadius: 5,
                                               spreadRadius: 2,
                                               offset: const Offset(0, 0),
@@ -490,7 +488,6 @@ class _AboutPageState extends State<AboutPage> {
                                               child: VerticalDivider(
                                                 thickness: 2,
                                                 color: theme.dividerColor,
-                                                // .withOpacity(.2),
                                                 width: 40,
                                               ),
                                             ),
@@ -729,7 +726,7 @@ class _AboutPageState extends State<AboutPage> {
         borderRadius: BorderRadius.circular(22),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(.1),
+            color: Colors.black.withValues(alpha: 0.1),
             blurRadius: 5,
             spreadRadius: 2,
             offset: const Offset(0, 0),
@@ -779,7 +776,7 @@ class _AboutPageState extends State<AboutPage> {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(.1),
+            color: Colors.black.withValues(alpha: 0.1),
             blurRadius: 5,
             spreadRadius: 2,
             offset: const Offset(0, 0),
@@ -791,7 +788,7 @@ class _AboutPageState extends State<AboutPage> {
           SizedBox(
             width: 34,
             height: 34,
-            child: Image.asset(imagePath, fit: BoxFit.contain),
+            child: Image.asset("assets/$imagePath", fit: BoxFit.contain),
           ),
           const SizedBox(width: 14),
           Expanded(
@@ -817,7 +814,7 @@ class _AboutPageState extends State<AboutPage> {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(.1),
+            color: Colors.black.withValues(alpha: 0.1),
             blurRadius: 5,
             spreadRadius: 2,
             offset: const Offset(0, 0),

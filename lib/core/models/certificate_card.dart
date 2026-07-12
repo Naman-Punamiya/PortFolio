@@ -44,7 +44,7 @@ class CertificateCard extends StatelessWidget {
                   top: Radius.circular(20),
                 ),
                 child: Image.asset(
-                  certificate.image,
+                  "assets/${certificate.image}",
                   height: 190,
                   width: double.infinity,
                   fit: BoxFit.cover,
@@ -77,7 +77,7 @@ class CertificateCard extends StatelessWidget {
                           vertical: 6,
                         ),
                         decoration: BoxDecoration(
-                          color: theme.colorScheme.primary.withOpacity(.1),
+                          color: theme.colorScheme.primary.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(30),
                         ),
                         child: Text(certificate.category),

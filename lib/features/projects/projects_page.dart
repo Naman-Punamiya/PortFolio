@@ -101,7 +101,7 @@ class _ProjectsSectionState extends State<ProjectsSection> {
                         style: theme.textTheme.titleMedium?.copyWith(
                           fontSize: 12,
                           fontWeight: FontWeight.w700,
-                          color: theme.colorScheme.onSurface.withOpacity(0.6),
+                          color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
                         ),
                       ),
                       const SizedBox(height: AppSpacing.lg),

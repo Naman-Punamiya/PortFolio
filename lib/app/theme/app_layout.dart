@@ -9,7 +9,7 @@ class AppLayout {
   static const double skillIconSize = 24.0;
 
   static const double contactSectionMaxWidth = 1240.0;
-  static const double contactInfoColumnMaxWidth = 360.0;
+  static const double contactInfoColumnMaxWidth = 480.0;
   static const double contactInfoCardIconSize = 48.0;
   static const double contactInputHeight = 58.0;
   static const double contactMessageHeight = 196.0;

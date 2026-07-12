@@ -27,7 +27,7 @@ class CertificatePreviewPage extends StatelessWidget {
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(20),
                   child: Image.asset(
-                    certificate.image,
+                    "assets/${certificate.image}",
                     fit: BoxFit.contain,
                   ),
                 ),

@@ -32,7 +32,7 @@ class ProjectCardWidget extends StatelessWidget {
                 borderRadius: BorderRadius.circular(AppRadius.md),
                 border: Border.all(color: Colors.black12, width: 1),
               ),
-              child: Image.asset(project.image, width: screenSize.width * 0.25),
+              child: Image.asset("assets/${project.image}", width: screenSize.width * 0.25),
             ),
             Expanded(
               child: Padding(
@@ -81,7 +81,7 @@ class ProjectCardWidget extends StatelessWidget {
                           child: Row(
                             children: [
                               Image.asset(
-                                "Github_white.png",
+                                "assets/Github_white.png",
                                 width: 20,
                                 color: Colors.black,
                               ),
@@ -107,7 +107,7 @@ class ProjectCardWidget extends StatelessWidget {
                           InkWell(
                             onTap: () => openUrl(project.iosLink!),
                             child: Image.asset(
-                              "apple.png",
+                              "assets/apple.png",
                               width: 20,
                               color: Colors.black,
                             ),
@@ -118,7 +118,7 @@ class ProjectCardWidget extends StatelessWidget {
                             child: InkWell(
                               onTap: () => openUrl(project.androidLink!),
                               child: Image.asset(
-                                "android.png",
+                                "assets/android.png",
                                 width: 24,
                                 color: Colors.black,
                               ),
@@ -130,7 +130,7 @@ class ProjectCardWidget extends StatelessWidget {
                             child: InkWell(
                               onTap: () => openUrl(project.webLink!),
                               child: Image.asset(
-                                "web.png",
+                                "assets/web.png",
                                 width: 20,
                                 color: Colors.black,
                               ),

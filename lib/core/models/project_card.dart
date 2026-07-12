@@ -3,7 +3,7 @@ import 'package:my_portfolio/app/theme/app_radius.dart';
 import 'package:my_portfolio/app/theme/app_shadows.dart';
 import 'package:my_portfolio/app/theme/app_spacing.dart';
 import 'package:my_portfolio/core/utils/project_utils.dart';
-import 'dart:js' as js;
+import 'package:url_launcher/url_launcher.dart';
 
 class ProjectCardWidget extends StatelessWidget {
   final ProjectUtils project;
@@ -31,7 +31,7 @@ class ProjectCardWidget extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Image.asset(
-            project.image,
+            "assets/${project.image}",
             height: 140,
             width: 250,
             fit: BoxFit.cover,
@@ -83,10 +83,10 @@ class ProjectCardWidget extends StatelessWidget {
                 if (project.iosLink != null)
                   InkWell(
                     onTap: () {
-                      js.context.callMethod('open', [project.iosLink]);
+                      _openLink(project.iosLink!);
                     },
                       child: Image.asset(
-                        "apple.png",
+                        "assets/apple.png",
                         width: 17,
                         color: theme.colorScheme.onPrimary,
                       ),
@@ -96,10 +96,10 @@ class ProjectCardWidget extends StatelessWidget {
                     padding: const EdgeInsets.only(left: AppSpacing.sm),
                     child: InkWell(
                       onTap: () {
-                        js.context.callMethod('open', [project.androidLink]);
+                        _openLink(project.androidLink!);
                       },
                       child: Image.asset(
-                        "android.png",
+                        "assets/android.png",
                         width: 18,
                         color: theme.colorScheme.onPrimary,
                       ),
@@ -110,10 +110,10 @@ class ProjectCardWidget extends StatelessWidget {
                     padding: const EdgeInsets.only(left: AppSpacing.sm),
                     child: InkWell(
                       onTap: () {
-                        js.context.callMethod('open', [project.webLink]);
+                        _openLink(project.webLink!);
                       },
                       child: Image.asset(
-                        "web.png",
+                        "assets/web.png",
                         width: 17,
                         color: theme.colorScheme.onPrimary,
                       ),
@@ -126,4 +126,15 @@ class ProjectCardWidget extends StatelessWidget {
       ),
     );
   }
+  Future<void> _openLink(String url) async {
+  final uri = Uri.parse(url);
+
+  if (!await launchUrl(
+    uri,
+    mode: LaunchMode.externalApplication,
+    webOnlyWindowName: '_blank',
+  )) {
+    throw Exception("Could not open $url");
+  }
+}
 }

@@ -158,7 +158,7 @@ class HomePageWidget extends StatelessWidget {
           // SizedBox(width: AppSpacing.xxl),
           Align(
             alignment: Alignment.centerRight,
-            child: Image.asset("Prog.gif", width: screenSize.width / 2),
+            child: Image.asset("assets/Prog.gif", width: screenSize.width / 2),
           ),
         ],
       ),

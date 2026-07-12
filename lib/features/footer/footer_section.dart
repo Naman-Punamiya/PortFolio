@@ -144,7 +144,7 @@ class _SocialIconButton extends StatelessWidget {
               ),
             ),
             alignment: Alignment.center,
-            child: Image.asset(asset, width: 24,color: theme.colorScheme.onSurface,),
+            child: Image.asset("assets/$asset", width: 24, color: theme.colorScheme.onSurface),
           ),
           const SizedBox(height: AppSpacing.xs/2),
           Text(

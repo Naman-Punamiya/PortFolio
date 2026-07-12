@@ -102,7 +102,7 @@ class _CertificatePageState extends State<CertificatePage> {
                           "Courses, certifications, workshops and achievements that showcase my continuous learning journey.",
                           textAlign: TextAlign.center,
                           style: theme.textTheme.bodyLarge?.copyWith(
-                            color: theme.colorScheme.onSurface.withOpacity(.7),
+                            color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
                           ),
                         ),
                       ),

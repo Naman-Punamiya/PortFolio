@@ -92,7 +92,7 @@ class _SkillsWidgetState extends State<SkillsWidget> {
             Padding(
               padding: const EdgeInsets.only(bottom: AppSpacing.md),
               child: _SkillFeatureCard(
-                iconPath: platform.image,
+                iconPath: "assets/${platform.image}",
                 title: platform.title,
                 subtitle: platform.subtitle ?? "",
                 theme: theme,
@@ -283,7 +283,7 @@ class _SkillFeatureCard extends StatelessWidget {
                 shape: BoxShape.circle,
               ),
               alignment: Alignment.center,
-              child: Image.asset(iconPath, width: iconSize, height: iconSize),
+              child: Image.asset("assets/$iconPath", width: iconSize, height: iconSize),
             ),
             const SizedBox(width: AppSpacing.md),
             Expanded(
@@ -349,7 +349,7 @@ class _SkillPill extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Image.asset(iconPath, width: iconSize, height: iconSize),
+          Image.asset("assets/$iconPath", width: iconSize, height: iconSize),
           const SizedBox(width: AppSpacing.sm),
           Text(
             title,

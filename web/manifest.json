@@ -1,6 +1,7 @@
 {
-    "name": "my_portfolio",
-    "short_name": "my_portfolio",
+
+    "name": "Naman Punamiya Portfolio",
+    "short_name": "Naman",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
