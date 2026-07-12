@@ -6,16 +6,102 @@ import 'package:my_portfolio/app/theme/app_radius.dart';
 import 'package:my_portfolio/app/theme/app_shadows.dart';
 import 'package:my_portfolio/app/theme/app_spacing.dart';
 import 'package:my_portfolio/core/constants/size.dart';
+import 'package:my_portfolio/core/repositories/contact_message_repository.dart';
+import 'package:my_portfolio/core/utils/contact_message_utils.dart';
 import 'package:my_portfolio/core/utils/contact_utils.dart';
 import 'package:my_portfolio/features/models/custom_textfield.dart';
 
-class ContactSection extends StatelessWidget {
+class ContactSection extends StatefulWidget {
   final ContactUtils contact;
 
-  const ContactSection({
-    super.key,
-    required this.contact,
-  });
+  const ContactSection({super.key, required this.contact});
+
+  @override
+  State<ContactSection> createState() => _ContactSectionState();
+}
+
+class _ContactSectionState extends State<ContactSection> {
+  final _formKey = GlobalKey<FormState>();
+
+  final _nameController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _subjectController = TextEditingController();
+  final _messageController = TextEditingController();
+
+  late final ContactMessageRepository _repository;
+
+  bool _isSending = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _repository = ContactMessageRepository();
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _emailController.dispose();
+    _subjectController.dispose();
+    _messageController.dispose();
+
+    super.dispose();
+  }
+
+  Future<void> sendMessage() async {
+    if (!_formKey.currentState!.validate()) {
+      return;
+    }
+
+    setState(() {
+      _isSending = true;
+    });
+
+    try {
+      final message = ContactMessageUtils(
+        name: _nameController.text.trim(),
+        email: _emailController.text.trim(),
+        subject: _subjectController.text.trim(),
+        message: _messageController.text.trim(),
+      );
+
+      await _repository.sendMessage(message);
+      FocusScope.of(context).unfocus();
+      _nameController.clear();
+      _emailController.clear();
+      _subjectController.clear();
+      _messageController.clear();
+
+      _formKey.currentState?.reset();
+
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: Theme.of(context).colorScheme.primary,
+          content: const Text(
+            "Thank you! Your message has been sent successfully.",
+          ),
+        ),
+      );
+    } catch (e) {
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text("Something went wrong.\nPlease try again later."),
+        ),
+      );
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isSending = false;
+        });
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -78,10 +164,10 @@ class ContactSection extends StatelessWidget {
           constraints: const BoxConstraints(
             maxWidth: AppLayout.contactInfoColumnMaxWidth,
           ),
-          child: _ContactIntro(theme: theme, contact: contact),
+          child: _ContactIntro(theme: theme, contact: widget.contact),
         ),
         const SizedBox(width: AppLayout.contactSectionGap),
-        Expanded(child: _ContactForm(theme: theme)),
+        Expanded(child: _buildContactForm(context, theme)),
       ],
     );
   }
@@ -91,10 +177,164 @@ class ContactSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _ContactIntro(theme: theme, contact: contact),
+        _ContactIntro(theme: theme, contact: widget.contact),
         const SizedBox(height: AppSpacing.xl),
-        _ContactForm(theme: theme),
+        _buildContactForm(context, theme),
       ],
+    );
+  }
+
+  Widget _buildContactForm(BuildContext context, ThemeData theme) {
+    return Container(
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surface,
+        borderRadius: BorderRadius.circular(AppRadius.lg),
+        border: Border.all(color: theme.dividerColor.withValues(alpha: 0.45)),
+        boxShadow: AppShadows.medium,
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpacing.lg),
+        child: IgnorePointer(
+          ignoring: _isSending,
+          child: Form(
+            key: _formKey,
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: CustomTextfield(
+                        controller: _nameController,
+                        hintText: AppContact.nameHint,
+                        maxLine: 1,
+                        prefixIcon: Icons.person_outline_rounded,
+                        validator: (value) {
+                          if (value == null || value.trim().isEmpty) {
+                            return "Please enter your name";
+                          }
+                          return null;
+                        },
+                      ),
+                    ),
+                    const SizedBox(width: AppSpacing.md),
+                    Expanded(
+                      child: CustomTextfield(
+                        controller: _emailController,
+                        hintText: AppContact.emailHint,
+                        maxLine: 1,
+                        prefixIcon: Icons.mail_outline_rounded,
+                        validator: (value) {
+                          if (value == null || value.trim().isEmpty) {
+                            return "Please enter your email";
+                          }
+
+                          final emailRegex = RegExp(
+                            r'^[^@\s]+@[^@\s]+\.[^@\s]+$',
+                          );
+
+                          if (!emailRegex.hasMatch(value)) {
+                            return "Enter a valid email";
+                          }
+
+                          return null;
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: AppSpacing.md),
+
+                CustomTextfield(
+                  hintText: "Subject",
+                  maxLine: 1,
+                  controller: _subjectController,
+                  prefixIcon: Icons.subject_outlined,
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
+                      return "Please enter a subject";
+                    }
+                    return null;
+                  },
+                ),
+
+                const SizedBox(height: AppSpacing.md),
+                CustomTextfield(
+                  hintText: AppContact.messageHint,
+                  maxLine: 9,
+                  controller: _messageController,
+                  prefixIcon: Icons.message_outlined,
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
+                      return "Please enter your message";
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: AppSpacing.md),
+                SizedBox(
+                  width: double.infinity,
+                  height: AppLayout.contactButtonHeight,
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(AppRadius.md),
+                      gradient: LinearGradient(
+                        colors: [
+                          theme.colorScheme.primary,
+                          theme.colorScheme.primary.withValues(alpha: 0.82),
+                        ],
+                      ),
+                    ),
+                    child: Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(AppRadius.md),
+                        onTap: _isSending ? null : sendMessage,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: AppSpacing.md,
+                          ),
+                          child: Row(
+                            children: [
+                              _isSending
+                                  ? SizedBox(
+                                      width: 22,
+                                      height: 22,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                        color: theme.colorScheme.surface,
+                                      ),
+                                    )
+                                  : Icon(
+                                      Icons.send_outlined,
+                                      color: theme.colorScheme.surface,
+                                      size: 22,
+                                    ),
+                              const Spacer(),
+                              Text(
+                                AppContact.sendButtonLabel,
+                                style: theme.textTheme.labelLarge?.copyWith(
+                                  color: theme.colorScheme.surface,
+                                  fontSize: 16,
+                                ),
+                              ),
+                              const Spacer(),
+                              Icon(
+                                Icons.arrow_forward_rounded,
+                                color: theme.colorScheme.surface,
+                                size: 24,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
@@ -175,109 +415,15 @@ class _ContactIntro extends StatelessWidget {
   }
 }
 
-class _ContactForm extends StatelessWidget {
-  const _ContactForm({required this.theme});
+// class _ContactForm extends StatelessWidget {
+//   const _ContactForm({required this.theme});
 
-  final ThemeData theme;
+//   final ThemeData theme;
 
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surface,
-        borderRadius: BorderRadius.circular(AppRadius.lg),
-        border: Border.all(color: theme.dividerColor.withValues(alpha: 0.45)),
-        boxShadow: AppShadows.medium,
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.lg),
-        child: Column(
-          children: [
-            Row(
-              children: [
-                Expanded(
-                  child: CustomTextfield(
-                    hintText: AppContact.nameHint,
-                    maxLine: 1,
-                    controller: null,
-                    prefixIcon: Icons.person_outline_rounded,
-                  ),
-                ),
-                const SizedBox(width: AppSpacing.md),
-                Expanded(
-                  child: CustomTextfield(
-                    hintText: AppContact.emailHint,
-                    maxLine: 1,
-                    controller: null,
-                    prefixIcon: Icons.mail_outline_rounded,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: AppSpacing.md),
-            CustomTextfield(
-              hintText: AppContact.messageHint,
-              maxLine: 9,
-              controller: null,
-              prefixIcon: Icons.message_outlined,
-            ),
-            const SizedBox(height: AppSpacing.md),
-            SizedBox(
-              width: double.infinity,
-              height: AppLayout.contactButtonHeight,
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(AppRadius.md),
-                  gradient: LinearGradient(
-                    colors: [
-                      theme.colorScheme.primary,
-                      theme.colorScheme.primary.withValues(alpha: 0.82),
-                    ],
-                  ),
-                ),
-                child: Material(
-                  color: Colors.transparent,
-                  child: InkWell(
-                    borderRadius: BorderRadius.circular(AppRadius.md),
-                    onTap: () {},
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: AppSpacing.md,
-                      ),
-                      child: Row(
-                        children: [
-                          Icon(
-                            Icons.send_outlined,
-                            color: theme.colorScheme.surface,
-                            size: 22,
-                          ),
-                          const Spacer(),
-                          Text(
-                            AppContact.sendButtonLabel,
-                            style: theme.textTheme.labelLarge?.copyWith(
-                              color: theme.colorScheme.surface,
-                              fontSize: 16,
-                            ),
-                          ),
-                          const Spacer(),
-                          Icon(
-                            Icons.arrow_forward_rounded,
-                            color: theme.colorScheme.surface,
-                            size: 24,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     }
+// }
 
 class _ContactInfoCard extends StatelessWidget {
   const _ContactInfoCard({

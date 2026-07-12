@@ -9,13 +9,15 @@ class CustomTextfield extends StatelessWidget {
   final int maxLine;
   final String hintText;
   final IconData? prefixIcon;
+  final String? Function(String?)? validator;
 
   const CustomTextfield({
     super.key,
     this.controller,
     required this.maxLine,
     required this.hintText,
-    this.prefixIcon,
+    this.prefixIcon, 
+    this.validator,
   });
 
   @override
@@ -26,9 +28,10 @@ class CustomTextfield extends StatelessWidget {
       height: isMultiline
           ? AppLayout.contactMessageHeight
           : AppLayout.contactInputHeight,
-      child: TextField(
+      child: TextFormField(
         controller: controller,
         maxLines: maxLine,
+        validator: validator,
         style: theme.textTheme.bodyMedium?.copyWith(
           color: theme.colorScheme.onSurface,
         ),

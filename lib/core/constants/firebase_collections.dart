@@ -8,4 +8,5 @@ class FirebaseCollections {
   static const education = "education";
   static const goals = "goals";
   static const contact = "contact";
+  static const messages = "messages";
 }
