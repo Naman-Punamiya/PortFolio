@@ -12,12 +12,14 @@ class CustomAppBar extends StatelessWidget {
   final VoidCallback onLogoTap;
   final VoidCallback onMenuTap;
   final Function(int) onNavMenuTap;
+  final VoidCallback onResumeTap;
   const CustomAppBar({
     super.key,
     required this.activeIndex,
     required this.onLogoTap,
     required this.onMenuTap,
     required this.onNavMenuTap,
+    required this.onResumeTap,
   });
 
   @override
@@ -80,7 +82,13 @@ class CustomAppBar extends StatelessWidget {
                     child: NavButton(
                       title: navTitles[index],
                       isActive: index == activeIndex,
-                      onTap: () => onNavMenuTap(index),
+                      onTap: () {
+                        if (index == 5) {
+                          onResumeTap();
+                        } else {
+                          onNavMenuTap(index);
+                        }
+                      },
                     ),
                   ),
                 ),

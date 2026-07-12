@@ -5,4 +5,7 @@ class FirebaseCollections {
   static const skills = "skills";
   static const experiences = "experiences";
   static const certificates = "certificates";
+  static const education = "education";
+  static const goals = "goals";
+  static const contact = "contact";
 }

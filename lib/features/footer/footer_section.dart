@@ -4,11 +4,16 @@ import 'package:my_portfolio/app/theme/app_contact.dart';
 import 'package:my_portfolio/app/theme/app_layout.dart';
 import 'package:my_portfolio/app/theme/app_radius.dart';
 import 'package:my_portfolio/app/theme/app_spacing.dart';
-import 'package:my_portfolio/core/lists/social_data.dart';
+import 'package:my_portfolio/core/utils/social_utils.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class FooterSection extends StatelessWidget {
-  const FooterSection({super.key});
+  final SocialUtils social;
+
+  const FooterSection({
+    super.key,
+    required this.social,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -55,32 +60,29 @@ class FooterSection extends StatelessWidget {
               const SizedBox(height: AppLayout.footerConnectGap),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                // spacing: AppLayout.footerSocialGap,
-                // runSpacing: AppLayout.footerSocialGap,
-                // alignment: WrapAlignment.center,
                 children: [
                   _SocialIconButton(
                     label: 'GitHub',
                     asset: 'Github_white.png',
-                    url: socialData.github,
+                    url: social.github,
                   ),
                   SizedBox(width: AppSpacing.lg),
                   _SocialIconButton(
                     label: 'LinkedIn',
                     asset: 'linkedin_white.png',
-                    url: socialData.linkedin,
+                    url: social.linkedin,
                   ),
                   SizedBox(width: AppSpacing.md),
                   _SocialIconButton(
                     label: 'Instagram',
                     asset: 'Instagram_white.png',
-                    url: socialData.instagram,
+                    url: social.instagram,
                   ),
                   SizedBox(width: AppSpacing.md),
                   _SocialIconButton(
-                    label: 'Discord',
+                    label: 'Email',
                     asset: 'Discord_white.png',
-                    url: socialData.email,
+                    url: "mailto:${social.email}",
                   ),
                 ],
               ),

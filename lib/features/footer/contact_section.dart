@@ -6,10 +6,16 @@ import 'package:my_portfolio/app/theme/app_radius.dart';
 import 'package:my_portfolio/app/theme/app_shadows.dart';
 import 'package:my_portfolio/app/theme/app_spacing.dart';
 import 'package:my_portfolio/core/constants/size.dart';
+import 'package:my_portfolio/core/utils/contact_utils.dart';
 import 'package:my_portfolio/features/models/custom_textfield.dart';
 
 class ContactSection extends StatelessWidget {
-  const ContactSection({super.key});
+  final ContactUtils contact;
+
+  const ContactSection({
+    super.key,
+    required this.contact,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -72,7 +78,7 @@ class ContactSection extends StatelessWidget {
           constraints: const BoxConstraints(
             maxWidth: AppLayout.contactInfoColumnMaxWidth,
           ),
-          child: _ContactIntro(theme: theme),
+          child: _ContactIntro(theme: theme, contact: contact),
         ),
         const SizedBox(width: AppLayout.contactSectionGap),
         Expanded(child: _ContactForm(theme: theme)),
@@ -85,7 +91,7 @@ class ContactSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _ContactIntro(theme: theme),
+        _ContactIntro(theme: theme, contact: contact),
         const SizedBox(height: AppSpacing.xl),
         _ContactForm(theme: theme),
       ],
@@ -94,9 +100,10 @@ class ContactSection extends StatelessWidget {
 }
 
 class _ContactIntro extends StatelessWidget {
-  const _ContactIntro({required this.theme});
-
   final ThemeData theme;
+  final ContactUtils contact;
+
+  const _ContactIntro({required this.theme, required this.contact});
 
   @override
   Widget build(BuildContext context) {
@@ -114,7 +121,7 @@ class _ContactIntro extends StatelessWidget {
         ),
         const SizedBox(height: AppSpacing.sm),
         Text(
-          AppContact.sectionTitle,
+          contact.title,
           style: theme.textTheme.headlineMedium?.copyWith(
             fontSize: 44,
             height: 1.1,
@@ -123,7 +130,7 @@ class _ContactIntro extends StatelessWidget {
         ),
         const SizedBox(height: AppSpacing.md),
         Text(
-          AppContact.sectionDescription,
+          contact.subtitle,
           style: theme.textTheme.bodyLarge?.copyWith(
             color: AppColors.textSecondary,
             height: 1.7,
@@ -144,7 +151,7 @@ class _ContactIntro extends StatelessWidget {
           theme: theme,
           icon: Icons.email_outlined,
           title: AppContact.emailTitle,
-          primaryText: AppContact.emailValue,
+          primaryText: contact.email,
           secondaryText: AppContact.emailSubtitle,
         ),
         const SizedBox(height: AppSpacing.md),
@@ -152,17 +159,15 @@ class _ContactIntro extends StatelessWidget {
           theme: theme,
           icon: Icons.work_outline_rounded,
           title: AppContact.availabilityTitle,
-          primaryText: null,
-          secondaryText: AppContact.availabilityItems.sublist(1).join(' · '),
-          showList: true,
-          listItems: AppContact.availabilityItems,
+          primaryText: contact.availability,
+          secondaryText: "",
         ),
         const SizedBox(height: AppSpacing.md),
         _ContactInfoCard(
           theme: theme,
           icon: Icons.location_on_outlined,
           title: AppContact.locationTitle,
-          primaryText: AppContact.locationValue,
+          primaryText: contact.location,
           secondaryText: AppContact.locationSubtitle,
         ),
       ],

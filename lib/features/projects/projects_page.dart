@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:my_portfolio/core/constants/size.dart';
 import 'package:my_portfolio/core/repositories/project_repository.dart';
+import 'package:my_portfolio/core/repositories/social_repository.dart';
 import 'package:my_portfolio/core/utils/project_utils.dart';
+import 'package:my_portfolio/core/utils/social_utils.dart';
 import 'package:my_portfolio/features/header/appbar.dart';
 import 'package:my_portfolio/features/models/drawer_mobile.dart';
 import 'package:my_portfolio/features/footer/footer_section.dart';
@@ -20,13 +22,19 @@ class ProjectsSection extends StatefulWidget {
 class _ProjectsSectionState extends State<ProjectsSection> {
   late final ProjectRepository _repository;
   late final Future<List<ProjectUtils>> _projectsFuture;
+  late final SocialRepository _socialRepository;
+  late final Future<SocialUtils> _socialFuture;
   final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
     super.initState();
+
     _repository = ProjectRepository();
     _projectsFuture = _repository.getProjects();
+
+    _socialRepository = SocialRepository();
+    _socialFuture = _socialRepository.getSocials();
   }
 
   @override
@@ -63,6 +71,7 @@ class _ProjectsSectionState extends State<ProjectsSection> {
                 onNavMenuTap: (int navIndex) {
                   scrollToSection(navIndex, widget.navbarkeys, context);
                 },
+                onResumeTap: () {},
               ),
               Expanded(
                 child: SingleChildScrollView(
@@ -173,7 +182,27 @@ class _ProjectsSectionState extends State<ProjectsSection> {
                         },
                       ),
                       const SizedBox(height: AppSpacing.lg),
-                      FooterSection(),
+                      FutureBuilder<SocialUtils>(
+                        future: _socialFuture,
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const SizedBox.shrink();
+                          }
+
+                          if (snapshot.hasError) {
+                            return Center(
+                              child: Text(snapshot.error.toString()),
+                            );
+                          }
+
+                          if (!snapshot.hasData) {
+                            return const SizedBox.shrink();
+                          }
+
+                          return FooterSection(social: snapshot.data!);
+                        },
+                      ),
                     ],
                   ),
                 ),

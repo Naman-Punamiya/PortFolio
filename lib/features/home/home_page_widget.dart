@@ -1,68 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:my_portfolio/core/constants/size.dart';
 import 'package:my_portfolio/app/theme/app_spacing.dart';
-import 'package:my_portfolio/core/repositories/profile_repository.dart';
 import 'package:my_portfolio/core/utils/profile_utils.dart';
 
-class HomePageWidget extends StatefulWidget {
-  final void Function()? onTapProject;
-  final void Function()? onTapResume;
+class HomePageWidget extends StatelessWidget {
+  final ProfileUtils profile;
+  final VoidCallback? onTapProject;
+  final VoidCallback? onTapResume;
+
   const HomePageWidget({
     super.key,
+    required this.profile,
     required this.onTapProject,
     required this.onTapResume,
   });
 
   @override
-  State<HomePageWidget> createState() => _HomePageWidgetState();
-}
-
-class _HomePageWidgetState extends State<HomePageWidget> {
-  late final ProfileRepository _repository;
-  late final Future<ProfileUtils> _profileFuture;
-
-  @override
-  void initState() {
-    super.initState();
-    _repository = ProfileRepository();
-    _profileFuture = _repository.getProfile();
-  }
-
-  @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
     final screenWidth = screenSize.width;
-    return FutureBuilder<ProfileUtils>(
-      future: _profileFuture,
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return SizedBox(
-            height: screenSize.height,
-            child: const Center(child: CircularProgressIndicator()),
-          );
-        }
 
-        if (snapshot.hasError) {
-          return SizedBox(
-            height: screenSize.height,
-            child: Center(child: Text(snapshot.error.toString())),
-          );
-        }
-
-        if (!snapshot.hasData) {
-          return SizedBox(
-            height: screenSize.height,
-            child: const Center(child: Text("Profile not found.")),
-          );
-        }
-
-        final profile = snapshot.data!;
-
-        return screenWidth >= minDesktopWidth
-            ? buildDesktopHomePage(context, screenSize, profile)
-            : buildMobileHomePage(context, screenSize, profile);
-      },
-    );
+    return screenWidth >= minDesktopWidth
+        ? buildDesktopHomePage(context, screenSize, profile)
+        : buildMobileHomePage(context, screenSize, profile);
   }
 
   Widget buildMobileHomePage(
@@ -173,7 +133,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                               .withValues(alpha: 0.35),
                           foregroundColor: theme.colorScheme.onSurface,
                         ),
-                        onPressed: widget.onTapProject,
+                        onPressed: onTapProject,
                         child: const Text("View Projects"),
                       ),
                     ),
@@ -186,7 +146,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                               .withValues(alpha: 0.35),
                           foregroundColor: theme.colorScheme.onSurface,
                         ),
-                        onPressed: widget.onTapResume,
+                        onPressed: onTapResume,
                         child: const Text("View Resume"),
                       ),
                     ),
